@@ -52,16 +52,27 @@ export default {
       times.push(i + ':00')
     }
     return {
-      event: this.createFreshEvent(),
+      event: this.createFreshEventObject(),
       times,
       categories: this.$store.state.categories
     }
   },
   methods: {
     createEvent() {
-      this.$store.dispatch('createEvent', this.event)
+      this.$store
+        .dispatch('createEvent', this.event)
+        .then(() => {
+          this.$router.push({
+            name: 'event-show',
+            params: { id: this.event.id }
+          })
+          this.event = this.createFreshEventObject()
+        })
+        .catch(() => {
+          console.log('There was a problem')
+        })
     },
-    createFreshEvent() {
+    createFreshEventObject() {
       const user = this.$store.state.user
       const id = Math.floor(Math.random() * 10000000)
 
